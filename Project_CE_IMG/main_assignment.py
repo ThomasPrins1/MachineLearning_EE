@@ -15,6 +15,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score, accuracy_score, roc_curve, precision_recall_curve, PrecisionRecallDisplay, roc_auc_score, RocCurveDisplay, confusion_matrix, precision_score, recall_score, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
 from math import isclose
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
 np.random.seed(5885221)
 
 
@@ -28,6 +30,11 @@ def create_image(flatImage,imageSize=28):
         image[i] = flatImage[(i*imageSize):((i+1)*imageSize)]
     return image
 
+def test_model (model,X,Y):
+    y_pred = model.predict(X)
+    MSE = mean_squared_error(Y, y_pred)
+    R2 = r2_score(Y, y_pred)
+    return y_pred,MSE, R2
 """ Main Code """
 
 """ Initialize Dataset """
@@ -57,6 +64,12 @@ print("mean of X after z-score normalization", np.nanmean(X_scaled[:10,:],axis=1
 X_train, X_test, y_train, y_test = train_test_split(X_scaled,Y,test_size=Test_ratio,random_state=Random_state)
 
 """ Model 1 """
+# (Weighted) Linear regression as a baseline:
+lin_reg = LinearRegression().fit(X_test, y_test)
+y_pred,MSE,R2 = test_model(lin_reg,X_train,y_train)
+print(MSE,R2)
+confusion_matrix(y_test, y_pred)
+
 """ Model 2 """
 """ Model 3 """
 """ Model 4 """
